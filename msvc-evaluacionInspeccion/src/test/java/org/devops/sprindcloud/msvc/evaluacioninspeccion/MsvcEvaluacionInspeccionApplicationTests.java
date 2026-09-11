@@ -1,4 +1,4 @@
-package org.devops.sprindcloud.msvc.evaluacioninspeccion.msvc_evaluacionInspeccion;
+package org.devops.sprindcloud.msvc.evaluacioninspeccion;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
