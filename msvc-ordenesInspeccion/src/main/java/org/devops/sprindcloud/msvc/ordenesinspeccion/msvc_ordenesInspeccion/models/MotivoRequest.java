@@ -14,4 +14,5 @@ public class MotivoRequest {
     public void setMotivo(String motivo) {
         this.motivo = motivo;
     }
+
 }

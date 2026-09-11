@@ -126,4 +126,5 @@ public class OrdenInspeccion {
     public void setMotivoAnulacion(String motivoAnulacion) {
         this.motivoAnulacion = motivoAnulacion;
     }
+
 }

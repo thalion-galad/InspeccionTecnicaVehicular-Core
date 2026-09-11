@@ -40,4 +40,5 @@ public interface OrdenInspeccionService {
 
     Optional<OrdenInspeccion> anular(Long id, String motivo);
 
+
 }
