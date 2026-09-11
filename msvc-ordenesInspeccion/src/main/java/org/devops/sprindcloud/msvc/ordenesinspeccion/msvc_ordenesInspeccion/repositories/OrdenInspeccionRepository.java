@@ -23,5 +23,4 @@ public interface OrdenInspeccionRepository
             Long vehiculoId,
             List<EstadoOrden> estados
     );
-
 }
