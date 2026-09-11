@@ -1,6 +1,6 @@
 package org.devops.sprindcloud.msvc.evaluacioninspeccion.clients;
 
-import org.devops.sprindcloud.msvc.evaluacioninspeccion.models.entity.EjecucionInspeccion;
+import org.devops.sprindcloud.msvc.evaluacioninspeccion.entity.EjecucionInspeccion;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

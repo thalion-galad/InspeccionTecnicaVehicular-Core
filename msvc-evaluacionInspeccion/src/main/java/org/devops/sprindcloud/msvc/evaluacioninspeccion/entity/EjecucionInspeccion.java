@@ -1,4 +1,4 @@
-package org.devops.sprindcloud.msvc.evaluacioninspeccion.models.entity;
+package org.devops.sprindcloud.msvc.evaluacioninspeccion.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.devops.sprindcloud.msvc.evaluacioninspeccion.models.entity;
+package org.devops.sprindcloud.msvc.evaluacioninspeccion.entity;
 
 public class OrdenInspeccion {
 
