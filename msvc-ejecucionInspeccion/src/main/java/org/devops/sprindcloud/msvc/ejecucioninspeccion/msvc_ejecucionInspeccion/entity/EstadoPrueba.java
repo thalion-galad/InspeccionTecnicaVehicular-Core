@@ -1,4 +1,14 @@
 package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity;
 
-public class EstadoPrueba {
+
+public enum EstadoPrueba {
+
+    PENDIENTE,
+
+    EN_PROCESO,
+
+    EJECUTADA,
+
+    ANULADA
+
 }
