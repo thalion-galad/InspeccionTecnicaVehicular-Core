@@ -1,8 +1,8 @@
 package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.controllers;
 
 import feign.FeignException;
-import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity.EjecucionInspeccion;
-import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity.ResultadoPrueba;
+import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models.entity.EjecucionInspeccion;
+import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models.entity.ResultadoPrueba;
 import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.services.EjecucionInspeccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.services;
 
-import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity.EjecucionInspeccion;
-import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity.ResultadoPrueba;
+import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models.entity.EjecucionInspeccion;
+import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models.entity.ResultadoPrueba;
 
 import java.util.List;
 import java.util.Optional;

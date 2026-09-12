@@ -1,6 +1,6 @@
 package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.repositories;
 
-import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity.EjecucionInspeccion;
+import org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models.entity.EjecucionInspeccion;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

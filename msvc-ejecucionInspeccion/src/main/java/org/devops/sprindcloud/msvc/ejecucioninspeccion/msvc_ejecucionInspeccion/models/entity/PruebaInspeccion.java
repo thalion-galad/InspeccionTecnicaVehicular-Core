@@ -1,4 +1,4 @@
-package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.entity;
+package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models.entity;
 
 import jakarta.persistence.*;
 
