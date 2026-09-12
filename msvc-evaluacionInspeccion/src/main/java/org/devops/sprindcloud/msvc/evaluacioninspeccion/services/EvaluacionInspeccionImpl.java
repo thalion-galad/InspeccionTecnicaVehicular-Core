@@ -6,8 +6,8 @@ import org.devops.sprindcloud.msvc.evaluacioninspeccion.models.DefectoDetectado;
 import org.devops.sprindcloud.msvc.evaluacioninspeccion.models.EvaluacionInspeccion;
 import org.devops.sprindcloud.msvc.evaluacioninspeccion.models.ResultadoInspeccion;
 
-import org.devops.sprindcloud.msvc.evaluacioninspeccion.entity.EjecucionInspeccion;
-import org.devops.sprindcloud.msvc.evaluacioninspeccion.entity.PruebaInspeccion;
+import org.devops.sprindcloud.msvc.evaluacioninspeccion.models.entity.EjecucionInspeccion;
+import org.devops.sprindcloud.msvc.evaluacioninspeccion.models.entity.PruebaInspeccion;
 
 import org.devops.sprindcloud.msvc.evaluacioninspeccion.repositories.EvaluacionInspeccionRepository;
 

@@ -1,4 +1,4 @@
-package org.devops.sprindcloud.msvc.evaluacioninspeccion.entity;
+package org.devops.sprindcloud.msvc.evaluacioninspeccion.models.entity;
 
 public class ResultadoPrueba {
 
