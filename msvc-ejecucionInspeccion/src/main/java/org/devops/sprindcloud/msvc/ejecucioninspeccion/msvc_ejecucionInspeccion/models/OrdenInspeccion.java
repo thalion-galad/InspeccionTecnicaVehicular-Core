@@ -1,18 +1,24 @@
 package org.devops.sprindcloud.msvc.ejecucioninspeccion.msvc_ejecucionInspeccion.models;
 
+import java.time.LocalDateTime;
+
 public class OrdenInspeccion {
 
     private Long id;
 
-    private Long vehiculoId;
-
     private Long solicitudId;
 
-    private Long inspectorId;
+    private Long vehiculoId;
+
+    private Long inspectorUsuarioId;
 
     private String estado;
 
-    private String resultado;
+    private LocalDateTime fechaCierre;
+
+    private String motivoSuspension;
+
+    private String motivoAnulacion;
 
 
     public OrdenInspeccion() {
@@ -28,15 +34,6 @@ public class OrdenInspeccion {
     }
 
 
-    public Long getVehiculoId() {
-        return vehiculoId;
-    }
-
-    public void setVehiculoId(Long vehiculoId) {
-        this.vehiculoId = vehiculoId;
-    }
-
-
     public Long getSolicitudId() {
         return solicitudId;
     }
@@ -46,12 +43,21 @@ public class OrdenInspeccion {
     }
 
 
-    public Long getInspectorId() {
-        return inspectorId;
+    public Long getVehiculoId() {
+        return vehiculoId;
     }
 
-    public void setInspectorId(Long inspectorId) {
-        this.inspectorId = inspectorId;
+    public void setVehiculoId(Long vehiculoId) {
+        this.vehiculoId = vehiculoId;
+    }
+
+
+    public Long getInspectorUsuarioId() {
+        return inspectorUsuarioId;
+    }
+
+    public void setInspectorUsuarioId(Long inspectorUsuarioId) {
+        this.inspectorUsuarioId = inspectorUsuarioId;
     }
 
 
@@ -64,11 +70,29 @@ public class OrdenInspeccion {
     }
 
 
-    public String getResultado() {
-        return resultado;
+    public LocalDateTime getFechaCierre() {
+        return fechaCierre;
     }
 
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
+    public void setFechaCierre(LocalDateTime fechaCierre) {
+        this.fechaCierre = fechaCierre;
+    }
+
+
+    public String getMotivoSuspension() {
+        return motivoSuspension;
+    }
+
+    public void setMotivoSuspension(String motivoSuspension) {
+        this.motivoSuspension = motivoSuspension;
+    }
+
+
+    public String getMotivoAnulacion() {
+        return motivoAnulacion;
+    }
+
+    public void setMotivoAnulacion(String motivoAnulacion) {
+        this.motivoAnulacion = motivoAnulacion;
     }
 }

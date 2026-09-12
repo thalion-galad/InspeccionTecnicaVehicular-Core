@@ -8,7 +8,7 @@ import java.util.List;
 
 @FeignClient(
         name = "msvc-evaluacionInspeccion",
-        url = "http://localhost:8020/api/evaluaciones"
+        url = "localhost:8020/api/evaluaciones"
 )
 public interface EvaluacionInspeccionClientRest {
 
