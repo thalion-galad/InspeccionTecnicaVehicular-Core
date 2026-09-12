@@ -32,11 +32,9 @@ public class OrdenInspeccionController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> detalle(
-            @PathVariable Long id) {
+    public ResponseEntity<?> detalle(@PathVariable Long id) {
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.porId(id);
+        Optional<OrdenInspeccion> ordenOpt = service.porId(id);
 
         if (ordenOpt.isPresent()) {
             return ResponseEntity.ok(ordenOpt.get());
@@ -47,23 +45,15 @@ public class OrdenInspeccionController {
 
 
     @PostMapping
-    public ResponseEntity<?> crear(
-            @Valid @RequestBody OrdenInspeccion orden,
-            BindingResult result) {
+    public ResponseEntity<?> crear(@Valid @RequestBody OrdenInspeccion orden, BindingResult result) {
 
         if (result.hasErrors()) {
             return validar(result);
         }
 
-        if (service.tieneOrdenActiva(
-                orden.getVehiculoId())) {
+        if (service.tieneOrdenActiva(orden.getVehiculoId())) {
 
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of(
-                            "mensaje",
-                            "El vehículo ya tiene una orden activa"
-                    ));
+            return ResponseEntity.badRequest().body(Map.of("mensaje", "El vehículo ya tiene una orden activa"));
         }
 
         orden.setId(null);
@@ -72,52 +62,35 @@ public class OrdenInspeccionController {
         orden.setMotivoSuspension(null);
         orden.setMotivoAnulacion(null);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(service.guardar(orden));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(orden));
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editar(
-            @Valid @RequestBody OrdenInspeccion orden,
-            BindingResult result,
-            @PathVariable Long id) {
+    public ResponseEntity<?> editar(@Valid @RequestBody OrdenInspeccion orden, BindingResult result, @PathVariable Long id) {
 
         if (result.hasErrors()) {
             return validar(result);
         }
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.porId(id);
+        Optional<OrdenInspeccion> ordenOpt = service.porId(id);
 
         if (ordenOpt.isPresent()) {
 
-            OrdenInspeccion ordenDB =
-                    ordenOpt.get();
+            OrdenInspeccion ordenDB = ordenOpt.get();
 
-            if (ordenDB.getEstado()
-                    != EstadoOrden.PENDIENTE) {
+            if (ordenDB.getEstado() != EstadoOrden.PENDIENTE) {
 
-                return ResponseEntity
-                        .badRequest()
-                        .body(Map.of(
-                                "mensaje",
-                                "Solo se puede editar una orden pendiente"
-                        ));
+                return ResponseEntity.badRequest().body(Map.of("mensaje", "Solo se puede editar una orden pendiente"));
             }
 
-            ordenDB.setSolicitudId(
-                    orden.getSolicitudId());
+            ordenDB.setSolicitudId(orden.getSolicitudId());
 
-            ordenDB.setVehiculoId(
-                    orden.getVehiculoId());
+            ordenDB.setVehiculoId(orden.getVehiculoId());
 
-            ordenDB.setInspectorUsuarioId(
-                    orden.getInspectorUsuarioId());
+            ordenDB.setInspectorUsuarioId(orden.getInspectorUsuarioId());
 
-            return ResponseEntity
-                    .ok(service.guardar(ordenDB));
+            return ResponseEntity.ok(service.guardar(ordenDB));
         }
 
         return ResponseEntity.notFound().build();
@@ -125,237 +98,140 @@ public class OrdenInspeccionController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(
-            @PathVariable Long id) {
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.porId(id);
+        Optional<OrdenInspeccion> ordenOpt = service.porId(id);
 
         if (ordenOpt.isPresent()) {
 
-            OrdenInspeccion orden =
-                    ordenOpt.get();
+            OrdenInspeccion orden = ordenOpt.get();
 
-            if (orden.getEstado()
-                    != EstadoOrden.PENDIENTE) {
+            if (orden.getEstado() != EstadoOrden.PENDIENTE) {
 
-                return ResponseEntity
-                        .badRequest()
-                        .body(Map.of(
-                                "mensaje",
-                                "Solo puede eliminarse una orden pendiente"
-                        ));
+                return ResponseEntity.badRequest().body(Map.of("mensaje", "Solo puede eliminarse una orden pendiente"));
             }
 
             service.eliminar(id);
 
-            return ResponseEntity
-                    .noContent()
-                    .build();
+            return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity
-                .notFound()
-                .build();
+        return ResponseEntity.notFound().build();
     }
 
 
     @GetMapping("/vehiculo/{vehiculoId}")
-    public ResponseEntity<?> porVehiculo(
-            @PathVariable Long vehiculoId) {
+    public ResponseEntity<?> porVehiculo(@PathVariable Long vehiculoId) {
 
-        return ResponseEntity.ok(
-                service.listarPorVehiculo(
-                        vehiculoId
-                )
-        );
+        return ResponseEntity.ok(service.listarPorVehiculo(vehiculoId));
     }
 
 
     @GetMapping("/solicitud/{solicitudId}")
-    public ResponseEntity<?> porSolicitud(
-            @PathVariable Long solicitudId) {
+    public ResponseEntity<?> porSolicitud(@PathVariable Long solicitudId) {
 
-        return ResponseEntity.ok(
-                service.listarPorSolicitud(
-                        solicitudId
-                )
-        );
+        return ResponseEntity.ok(service.listarPorSolicitud(solicitudId));
     }
 
 
     @GetMapping("/inspector/{inspectorId}")
-    public ResponseEntity<?> porInspector(
-            @PathVariable Long inspectorId) {
+    public ResponseEntity<?> porInspector(@PathVariable Long inspectorId) {
 
-        return ResponseEntity.ok(
-                service.listarPorInspector(
-                        inspectorId
-                )
-        );
+        return ResponseEntity.ok(service.listarPorInspector(inspectorId));
     }
 
 
     @GetMapping("/estado/{estado}")
-    public ResponseEntity<?> porEstado(
-            @PathVariable EstadoOrden estado) {
+    public ResponseEntity<?> porEstado(@PathVariable EstadoOrden estado) {
 
-        return ResponseEntity.ok(
-                service.listarPorEstado(estado)
-        );
+        return ResponseEntity.ok(service.listarPorEstado(estado));
     }
 
 
     @PutMapping("/{id}/iniciar")
-    public ResponseEntity<?> iniciar(
-            @PathVariable Long id) {
+    public ResponseEntity<?> iniciar(@PathVariable Long id) {
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.iniciar(id);
+        Optional<OrdenInspeccion> ordenOpt = service.iniciar(id);
 
         if (ordenOpt.isPresent()) {
-            return ResponseEntity.ok(
-                    ordenOpt.get()
-            );
+            return ResponseEntity.ok(ordenOpt.get());
         }
 
-        return ResponseEntity
-                .badRequest()
-                .body(Map.of(
-                        "mensaje",
-                        "La orden no existe o no se encuentra pendiente"
-                ));
+        return ResponseEntity.badRequest().body(Map.of("mensaje", "La orden no existe o no se encuentra pendiente"));
     }
 
 
     @PutMapping("/{id}/suspender")
-    public ResponseEntity<?> suspender(
-            @PathVariable Long id,
-            @Valid @RequestBody MotivoRequest request,
-            BindingResult result) {
+    public ResponseEntity<?> suspender(@PathVariable Long id, @Valid @RequestBody MotivoRequest request, BindingResult result) {
 
         if (result.hasErrors()) {
             return validar(result);
         }
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.suspender(
-                        id,
-                        request.getMotivo()
-                );
+        Optional<OrdenInspeccion> ordenOpt = service.suspender(id, request.getMotivo());
 
         if (ordenOpt.isPresent()) {
-            return ResponseEntity.ok(
-                    ordenOpt.get()
-            );
+            return ResponseEntity.ok(ordenOpt.get());
         }
 
-        return ResponseEntity
-                .badRequest()
-                .body(Map.of(
-                        "mensaje",
-                        "Solo puede suspenderse una orden en proceso"
-                ));
+        return ResponseEntity.badRequest().body(Map.of("mensaje", "Solo puede suspenderse una orden en proceso"));
     }
 
 
     @PutMapping("/{id}/reanudar")
-    public ResponseEntity<?> reanudar(
-            @PathVariable Long id) {
+    public ResponseEntity<?> reanudar(@PathVariable Long id) {
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.reanudar(id);
+        Optional<OrdenInspeccion> ordenOpt = service.reanudar(id);
 
         if (ordenOpt.isPresent()) {
-            return ResponseEntity.ok(
-                    ordenOpt.get()
-            );
+            return ResponseEntity.ok(ordenOpt.get());
         }
 
-        return ResponseEntity
-                .badRequest()
-                .body(Map.of(
-                        "mensaje",
-                        "Solo puede reanudarse una orden suspendida"
-                ));
+        return ResponseEntity.badRequest().body(Map.of("mensaje", "Solo puede reanudarse una orden suspendida"));
     }
 
 
     @PutMapping("/{id}/completar")
-    public ResponseEntity<?> completar(
-            @PathVariable Long id) {
+    public ResponseEntity<?> completar(@PathVariable Long id) {
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.completar(id);
+        Optional<OrdenInspeccion> ordenOpt = service.completar(id);
 
         if (ordenOpt.isPresent()) {
-            return ResponseEntity.ok(
-                    ordenOpt.get()
-            );
+            return ResponseEntity.ok(ordenOpt.get());
         }
 
-        return ResponseEntity
-                .badRequest()
-                .body(Map.of(
-                        "mensaje",
-                        "Solo puede completarse una orden en proceso"
-                ));
+        return ResponseEntity.badRequest().body(Map.of("mensaje", "Solo puede completarse una orden en proceso"));
     }
 
 
     @PutMapping("/{id}/anular")
-    public ResponseEntity<?> anular(
-            @PathVariable Long id,
-            @Valid @RequestBody MotivoRequest request,
-            BindingResult result) {
+    public ResponseEntity<?> anular(@PathVariable Long id, @Valid @RequestBody MotivoRequest request, BindingResult result) {
 
         if (result.hasErrors()) {
             return validar(result);
         }
 
-        Optional<OrdenInspeccion> ordenOpt =
-                service.anular(
-                        id,
-                        request.getMotivo()
-                );
+        Optional<OrdenInspeccion> ordenOpt = service.anular(id, request.getMotivo());
 
         if (ordenOpt.isPresent()) {
-            return ResponseEntity.ok(
-                    ordenOpt.get()
-            );
+            return ResponseEntity.ok(ordenOpt.get());
         }
 
-        return ResponseEntity
-                .badRequest()
-                .body(Map.of(
-                        "mensaje",
-                        "La orden no existe o ya no puede anularse"
-                ));
+        return ResponseEntity.badRequest().body(Map.of("mensaje", "La orden no existe o ya no puede anularse"));
     }
 
 
-    private static ResponseEntity<Map<String, String>>
-    validar(BindingResult result) {
+    private static ResponseEntity<Map<String, String>> validar(BindingResult result) {
 
-        Map<String, String> errores =
-                new HashMap<>();
+        Map<String, String> errores = new HashMap<>();
 
-        result.getFieldErrors()
-                .forEach(err -> {
+        result.getFieldErrors().forEach(err -> {
 
-                    errores.put(
-                            err.getField(),
-                            "El campo "
-                                    + err.getField()
-                                    + " "
-                                    + err.getDefaultMessage()
-                    );
+            errores.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
 
-                });
+        });
 
-        return ResponseEntity
-                .badRequest()
-                .body(errores);
+        return ResponseEntity.badRequest().body(errores);
     }
 
 }

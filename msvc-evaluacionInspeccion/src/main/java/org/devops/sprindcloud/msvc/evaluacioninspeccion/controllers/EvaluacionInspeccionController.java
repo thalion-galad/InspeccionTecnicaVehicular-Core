@@ -26,154 +26,94 @@ public class EvaluacionInspeccionController {
     @GetMapping
     public ResponseEntity<List<EvaluacionInspeccion>> listar() {
 
-        return ResponseEntity.ok(
-                service.listar()
-        );
+        return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> detalle(
-            @PathVariable Long id) {
+    public ResponseEntity<?> detalle(@PathVariable Long id) {
 
-        Optional<EvaluacionInspeccion> op =
-                service.porId(id);
+        Optional<EvaluacionInspeccion> op = service.porId(id);
 
         if (op.isPresent()) {
 
-            return ResponseEntity.ok(
-                    op.get()
-            );
+            return ResponseEntity.ok(op.get());
         }
 
-        return ResponseEntity
-                .notFound()
-                .build();
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/orden/{ordenInspeccionId}")
-    public ResponseEntity<?> detallePorOrden(
-            @PathVariable Long ordenInspeccionId) {
+    public ResponseEntity<?> detallePorOrden(@PathVariable Long ordenInspeccionId) {
 
-        Optional<EvaluacionInspeccion> op =
-                service.porOrdenInspeccionId(
-                        ordenInspeccionId
-                );
+        Optional<EvaluacionInspeccion> op = service.porOrdenInspeccionId(ordenInspeccionId);
 
         if (op.isPresent()) {
 
-            return ResponseEntity.ok(
-                    op.get()
-            );
+            return ResponseEntity.ok(op.get());
         }
 
-        return ResponseEntity
-                .notFound()
-                .build();
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<?> crear(
-            @RequestBody EvaluacionInspeccion evaluacionInspeccion) {
+    public ResponseEntity<?> crear(@RequestBody EvaluacionInspeccion evaluacionInspeccion) {
 
-        EvaluacionInspeccion evaluacionDB =
-                service.guardar(
-                        evaluacionInspeccion
-                );
+        EvaluacionInspeccion evaluacionDB = service.guardar(evaluacionInspeccion);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(evaluacionDB);
+        return ResponseEntity.status(HttpStatus.CREATED).body(evaluacionDB);
     }
 
     @PostMapping("/{evaluacionInspeccionId}/defectos")
-    public ResponseEntity<?> registrarDefecto(
-            @RequestBody DefectoDetectado defectoDetectado,
-            @PathVariable Long evaluacionInspeccionId) {
+    public ResponseEntity<?> registrarDefecto(@RequestBody DefectoDetectado defectoDetectado, @PathVariable Long evaluacionInspeccionId) {
 
-        Optional<DefectoDetectado> op =
-                service.registrarDefecto(
-                        defectoDetectado,
-                        evaluacionInspeccionId
-                );
+        Optional<DefectoDetectado> op = service.registrarDefecto(defectoDetectado, evaluacionInspeccionId);
 
         if (op.isPresent()) {
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(op.get());
+            return ResponseEntity.status(HttpStatus.CREATED).body(op.get());
         }
 
-        return ResponseEntity
-                .notFound()
-                .build();
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{evaluacionInspeccionId}/determinarResultado")
-    public ResponseEntity<?> determinarResultado(
-            @PathVariable Long evaluacionInspeccionId) {
+    public ResponseEntity<?> determinarResultado(@PathVariable Long evaluacionInspeccionId) {
 
         Optional<EvaluacionInspeccion> op;
 
         try {
 
-            op = service.determinarResultado(
-                    evaluacionInspeccionId
-            );
+            op = service.determinarResultado(evaluacionInspeccionId);
 
         } catch (FeignException e) {
 
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(
-                            Collections.singletonMap(
-                                    "Mensaje",
-                                    "Error en la comunicación con el microservicio de ejecución: "
-                                            + e.getMessage()
-                            )
-                    );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("Mensaje", "Error en la comunicación con el microservicio de ejecución: " + e.getMessage()));
 
         } catch (IllegalStateException e) {
 
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(
-                            Collections.singletonMap(
-                                    "Mensaje",
-                                    e.getMessage()
-                            )
-                    );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("Mensaje", e.getMessage()));
         }
 
         if (op.isPresent()) {
 
-            return ResponseEntity.ok(
-                    op.get()
-            );
+            return ResponseEntity.ok(op.get());
         }
 
-        return ResponseEntity
-                .notFound()
-                .build();
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(
-            @PathVariable Long id) {
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
 
-        Optional<EvaluacionInspeccion> op =
-                service.porId(id);
+        Optional<EvaluacionInspeccion> op = service.porId(id);
 
         if (op.isPresent()) {
 
             service.eliminar(id);
 
-            return ResponseEntity
-                    .noContent()
-                    .build();
+            return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity
-                .notFound()
-                .build();
+        return ResponseEntity.notFound().build();
     }
 }

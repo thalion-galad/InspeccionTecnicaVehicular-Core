@@ -55,7 +55,22 @@ public class EvaluacionInspeccionImpl implements EvaluacionInspeccionService {
     @Override
     @Transactional
     public EvaluacionInspeccion guardar(
-            EvaluacionInspeccion evaluacionInspeccion) {
+            EvaluacionInspeccion evaluacionInspeccion)
+    {
+
+        EjecucionInspeccion ejecucion =
+                ejecucionClient.detalle(
+                        evaluacionInspeccion.getEjecucionInspeccionId()
+                );
+
+
+        if(ejecucion == null){
+
+            throw new IllegalStateException(
+                    "No existe la ejecución asociada"
+            );
+        }
+
 
         return repository.save(evaluacionInspeccion);
     }
