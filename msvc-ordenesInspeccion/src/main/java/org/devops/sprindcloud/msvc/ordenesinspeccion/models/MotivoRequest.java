@@ -1,0 +1,17 @@
+package org.devops.sprindcloud.msvc.ordenesinspeccion.models;
+
+import jakarta.validation.constraints.NotBlank;
+
+public class MotivoRequest {
+
+    @NotBlank
+    private String motivo;
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+}

@@ -114,6 +114,13 @@ public class EvaluacionInspeccionImpl implements EvaluacionInspeccionService {
                         evaluacionInspeccion
                                 .getEjecucionInspeccionId()
                 );
+        if(ejecucionInspeccion.getFechaFin()==null){
+
+            throw new IllegalStateException(
+                    "La ejecución todavía no finalizó"
+            );
+
+        }
 
         if (ejecucionInspeccion.getPruebas() == null ||
                 ejecucionInspeccion.getPruebas().isEmpty()) {
