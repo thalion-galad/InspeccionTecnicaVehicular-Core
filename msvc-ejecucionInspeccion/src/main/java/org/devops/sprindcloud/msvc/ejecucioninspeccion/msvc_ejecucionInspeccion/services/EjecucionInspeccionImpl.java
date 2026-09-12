@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EjecucionInspeccionImpl
-        implements EjecucionInspeccionService {
+public class EjecucionInspeccionImpl implements EjecucionInspeccionService {
 
     @Autowired
     private EjecucionInspeccionRepository repository;
@@ -31,15 +30,13 @@ public class EjecucionInspeccionImpl
     @Transactional(readOnly = true)
     public List<EjecucionInspeccion> listar() {
 
-        return (List<EjecucionInspeccion>)
-                repository.findAll();
+        return (List<EjecucionInspeccion>) repository.findAll();
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<EjecucionInspeccion> porId(
-            Long id) {
+    public Optional<EjecucionInspeccion> porId(Long id) {
 
         return repository.findById(id);
     }
@@ -47,26 +44,19 @@ public class EjecucionInspeccionImpl
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<EjecucionInspeccion> porOrdenInspeccionId(
-            Long ordenInspeccionId) {
+    public Optional<EjecucionInspeccion> porOrdenInspeccionId(Long ordenInspeccionId) {
 
-        return repository
-                .findByOrdenInspeccionId(
-                        ordenInspeccionId
-                );
+        return repository.findByOrdenInspeccionId(ordenInspeccionId);
     }
 
 
     @Override
     @Transactional
-    public EjecucionInspeccion crearEjecucion(
-            EjecucionInspeccion ejecucionInspeccion) {
+    public EjecucionInspeccion crearEjecucion(EjecucionInspeccion ejecucionInspeccion) {
 
         if (ejecucionInspeccion.getOrdenInspeccionId() == null) {
 
-            throw new IllegalStateException(
-                    "La ejecución debe estar asociada a una orden de inspección"
-            );
+            throw new IllegalStateException("La ejecución debe estar asociada a una orden de inspección");
         }
 
         /*
@@ -75,55 +65,39 @@ public class EjecucionInspeccionImpl
          * Si la orden no existe, Feign lanzará
          * FeignException y el Controller devolverá 404.
          */
-        OrdenInspeccion orden =
-                ordenClient.detalle(
-                        ejecucionInspeccion
-                                .getOrdenInspeccionId()
-                );
+        OrdenInspeccion orden = ordenClient.detalle(ejecucionInspeccion.getOrdenInspeccionId());
 
         if (orden == null) {
 
-            throw new IllegalStateException(
-                    "No se encontró la orden de inspección"
-            );
+            throw new IllegalStateException("No se encontró la orden de inspección");
         }
 
         /*
          * Una misma orden no debe tener dos
          * ejecuciones distintas.
          */
-        if (repository.existsByOrdenInspeccionId(
-                ejecucionInspeccion
-                        .getOrdenInspeccionId())) {
+        if (repository.existsByOrdenInspeccionId(ejecucionInspeccion.getOrdenInspeccionId())) {
 
-            throw new IllegalStateException(
-                    "La orden ya posee una ejecución de inspección"
-            );
+            throw new IllegalStateException("La orden ya posee una ejecución de inspección");
         }
 
         /*
          * Una ejecución técnica debe tener
          * pruebas registradas.
          */
-        if (ejecucionInspeccion.getPruebas() == null ||
-                ejecucionInspeccion.getPruebas().isEmpty()) {
+        if (ejecucionInspeccion.getPruebas() == null || ejecucionInspeccion.getPruebas().isEmpty()) {
 
-            throw new IllegalStateException(
-                    "La ejecución debe contener pruebas de inspección"
-            );
+            throw new IllegalStateException("La ejecución debe contener pruebas de inspección");
         }
 
         /*
          * Inicializamos todas las pruebas.
          */
-        for (PruebaInspeccion prueba :
-                ejecucionInspeccion.getPruebas()) {
+        for (PruebaInspeccion prueba : ejecucionInspeccion.getPruebas()) {
 
             if (prueba.getTipoPrueba() == null) {
 
-                throw new IllegalStateException(
-                        "Todas las pruebas deben indicar su tipo"
-                );
+                throw new IllegalStateException("Todas las pruebas deben indicar su tipo");
             }
 
             /*
@@ -137,9 +111,7 @@ public class EjecucionInspeccionImpl
             /*
              * Toda prueba nueva comienza pendiente.
              */
-            prueba.setEstado(
-                    EstadoPrueba.PENDIENTE
-            );
+            prueba.setEstado(EstadoPrueba.PENDIENTE);
 
             /*
              * Una ejecución recién creada
@@ -147,9 +119,7 @@ public class EjecucionInspeccionImpl
              */
             if (prueba.getResultado() != null) {
 
-                throw new IllegalStateException(
-                        "No se puede crear una ejecución con resultados ya registrados"
-                );
+                throw new IllegalStateException("No se puede crear una ejecución con resultados ya registrados");
             }
         }
 
@@ -161,212 +131,126 @@ public class EjecucionInspeccionImpl
         ejecucionInspeccion.setFechaInicio(null);
         ejecucionInspeccion.setFechaFin(null);
 
-        return repository.save(
-                ejecucionInspeccion
-        );
+        return repository.save(ejecucionInspeccion);
     }
-
 
     @Override
     @Transactional
-    public Optional<EjecucionInspeccion> iniciarPrueba(
-            Long ejecucionId,
-            Long pruebaId) {
+    public Optional<EjecucionInspeccion> iniciarPrueba(Long ejecucionId, Long pruebaId) {
 
-        Optional<EjecucionInspeccion> op =
-                repository.findById(
-                        ejecucionId
-                );
+        Optional<EjecucionInspeccion> op = repository.findById(ejecucionId);
 
         if (op.isEmpty()) {
             return Optional.empty();
         }
 
-        EjecucionInspeccion ejecucion =
-                op.get();
+        EjecucionInspeccion ejecucion = op.get();
 
-        validarEjecucionAbierta(
-                ejecucion
-        );
+        validarEjecucionAbierta(ejecucion);
 
-        PruebaInspeccion prueba =
-                buscarPrueba(
-                        ejecucion,
-                        pruebaId
-                );
+        PruebaInspeccion prueba = buscarPrueba(ejecucion, pruebaId);
 
-        if (prueba.getEstado() !=
-                EstadoPrueba.PENDIENTE) {
+        if (prueba.getEstado() != EstadoPrueba.PENDIENTE) {
 
-            throw new IllegalStateException(
-                    "Solo una prueba pendiente puede iniciarse"
-            );
+            throw new IllegalStateException("Solo una prueba pendiente puede iniciarse");
         }
+        prueba.setEstado(EstadoPrueba.EN_PROCESO);
 
-        prueba.setEstado(
-                EstadoPrueba.EN_PROCESO
-        );
-
-        /*
-         * La primera prueba iniciada marca
-         * el comienzo real de la ejecución.
-         */
         if (ejecucion.getFechaInicio() == null) {
 
-            ejecucion.setFechaInicio(
-                    LocalDateTime.now()
-            );
+            ejecucion.setFechaInicio(LocalDateTime.now());
         }
 
-        repository.save(
-                ejecucion
-        );
+        repository.save(ejecucion);
 
-        return Optional.of(
-                ejecucion
-        );
+        return Optional.of(ejecucion);
     }
 
 
     @Override
     @Transactional
-    public Optional<EjecucionInspeccion> registrarResultado(
-            Long ejecucionId,
-            Long pruebaId,
-            ResultadoPrueba resultado) {
+    public Optional<EjecucionInspeccion> registrarResultado(Long ejecucionId, Long pruebaId, ResultadoPrueba resultado) {
 
-        Optional<EjecucionInspeccion> op =
-                repository.findById(
-                        ejecucionId
-                );
+        Optional<EjecucionInspeccion> op = repository.findById(ejecucionId);
 
         if (op.isEmpty()) {
             return Optional.empty();
         }
 
-        EjecucionInspeccion ejecucion =
-                op.get();
+        EjecucionInspeccion ejecucion = op.get();
 
-        validarEjecucionAbierta(
-                ejecucion
-        );
+        validarEjecucionAbierta(ejecucion);
 
-        PruebaInspeccion prueba =
-                buscarPrueba(
-                        ejecucion,
-                        pruebaId
-                );
+        PruebaInspeccion prueba = buscarPrueba(ejecucion, pruebaId);
 
-        if (prueba.getEstado() !=
-                EstadoPrueba.EN_PROCESO) {
+        if (prueba.getEstado() != EstadoPrueba.EN_PROCESO) {
 
-            throw new IllegalStateException(
-                    "La prueba debe estar en proceso antes de registrar su resultado"
-            );
+            throw new IllegalStateException("La prueba debe estar en proceso antes de registrar su resultado");
         }
 
         if (resultado == null) {
 
-            throw new IllegalStateException(
-                    "Debe registrar un resultado para la prueba"
-            );
+            throw new IllegalStateException("Debe registrar un resultado para la prueba");
         }
 
         if (resultado.getConforme() == null) {
 
-            throw new IllegalStateException(
-                    "Debe indicar si la prueba es conforme o no conforme"
-            );
+            throw new IllegalStateException("Debe indicar si la prueba es conforme o no conforme");
         }
 
         /*
          * Una medición numérica debe tener
          * su correspondiente unidad.
          */
-        if (resultado.getValor() != null &&
-                (resultado.getUnidad() == null ||
-                        resultado.getUnidad().isBlank())) {
+        if (resultado.getValor() != null && (resultado.getUnidad() == null || resultado.getUnidad().isBlank())) {
 
-            throw new IllegalStateException(
-                    "Una medición debe indicar su unidad"
-            );
+            throw new IllegalStateException("Una medición debe indicar su unidad");
         }
 
-        prueba.setResultado(
-                resultado
-        );
+        prueba.setResultado(resultado);
 
-        prueba.setEstado(
-                EstadoPrueba.EJECUTADA
-        );
+        prueba.setEstado(EstadoPrueba.EJECUTADA);
 
-        repository.save(
-                ejecucion
-        );
+        repository.save(ejecucion);
 
-        return Optional.of(
-                ejecucion
-        );
+        return Optional.of(ejecucion);
     }
 
 
     @Override
     @Transactional
-    public Optional<EjecucionInspeccion> finalizarEjecucion(
-            Long ejecucionId) {
+    public Optional<EjecucionInspeccion> finalizarEjecucion(Long ejecucionId) {
 
-        Optional<EjecucionInspeccion> op =
-                repository.findById(
-                        ejecucionId
-                );
+        Optional<EjecucionInspeccion> op = repository.findById(ejecucionId);
 
         if (op.isEmpty()) {
             return Optional.empty();
         }
 
-        EjecucionInspeccion ejecucion =
-                op.get();
+        EjecucionInspeccion ejecucion = op.get();
 
-        validarEjecucionAbierta(
-                ejecucion
-        );
+        validarEjecucionAbierta(ejecucion);
 
-        if (ejecucion.getPruebas() == null ||
-                ejecucion.getPruebas().isEmpty()) {
+        if (ejecucion.getPruebas() == null || ejecucion.getPruebas().isEmpty()) {
 
-            throw new IllegalStateException(
-                    "La ejecución no contiene pruebas"
-            );
+            throw new IllegalStateException("La ejecución no contiene pruebas");
         }
 
-        boolean pruebasObligatoriasPendientes =
-                ejecucion.getPruebas()
-                        .stream()
-                        .filter(prueba ->
-                                Boolean.TRUE.equals(
-                                        prueba.getObligatoria()
-                                )
-                        )
-                        .anyMatch(prueba ->
+        boolean pruebasObligatoriasPendientes = ejecucion.getPruebas().stream().filter(prueba -> Boolean.TRUE.equals(prueba.getObligatoria())).anyMatch(prueba ->
 
-                                prueba.getEstado() !=
-                                        EstadoPrueba.EJECUTADA
+                prueba.getEstado() != EstadoPrueba.EJECUTADA
 
-                                        ||
+                        ||
 
-                                        prueba.getResultado() == null
+                        prueba.getResultado() == null
 
-                                        ||
+                        ||
 
-                                        prueba.getResultado()
-                                                .getConforme() == null
-                        );
+                        prueba.getResultado().getConforme() == null);
 
         if (pruebasObligatoriasPendientes) {
 
-            throw new IllegalStateException(
-                    "Existen pruebas obligatorias pendientes"
-            );
+            throw new IllegalStateException("Existen pruebas obligatorias pendientes");
         }
 
         /*
@@ -375,56 +259,23 @@ public class EjecucionInspeccionImpl
          * Esa responsabilidad la tiene
          * msvc-evaluacionInspeccion.
          */
-        ejecucion.setFechaFin(
-                LocalDateTime.now()
-        );
+        ejecucion.setFechaFin(LocalDateTime.now());
 
-        repository.save(
-                ejecucion
-        );
+        repository.save(ejecucion);
 
-        return Optional.of(
-                ejecucion
-        );
+        return Optional.of(ejecucion);
     }
 
+    private PruebaInspeccion buscarPrueba(EjecucionInspeccion ejecucion, Long pruebaId) {
 
-    /*
-     * Busca una prueba dentro de la ejecución.
-     */
-    private PruebaInspeccion buscarPrueba(
-            EjecucionInspeccion ejecucion,
-            Long pruebaId) {
-
-        return ejecucion
-                .getPruebas()
-                .stream()
-                .filter(prueba ->
-                        prueba.getId() != null &&
-                                prueba.getId()
-                                        .equals(pruebaId)
-                )
-                .findFirst()
-                .orElseThrow(() ->
-                        new IllegalStateException(
-                                "La prueba no pertenece a la ejecución indicada"
-                        )
-                );
+        return ejecucion.getPruebas().stream().filter(prueba -> prueba.getId() != null && prueba.getId().equals(pruebaId)).findFirst().orElseThrow(() -> new IllegalStateException("La prueba no pertenece a la ejecución indicada"));
     }
 
-
-    /*
-     * Impide modificar una ejecución
-     * que ya fue finalizada.
-     */
-    private void validarEjecucionAbierta(
-            EjecucionInspeccion ejecucion) {
+    private void validarEjecucionAbierta(EjecucionInspeccion ejecucion) {
 
         if (ejecucion.getFechaFin() != null) {
 
-            throw new IllegalStateException(
-                    "La ejecución ya fue finalizada y no puede modificarse"
-            );
+            throw new IllegalStateException("La ejecución ya fue finalizada y no puede modificarse");
         }
     }
 }
